@@ -1,0 +1,17 @@
+{
+  "name": "Save",
+  "type": "object",
+  "title": "Sauvegarde privée de la progression",
+  "properties": {
+    "uid": { "type": "string" },
+    "ts": { "type": "number", "default": 0 },
+    "data": { "type": "object" }
+  },
+  "required": ["uid"],
+  "rls": {
+    "create": true,
+    "read": { "created_by": "{{user.email}}" },
+    "update": { "created_by": "{{user.email}}" },
+    "delete": { "created_by": "{{user.email}}" }
+  }
+}

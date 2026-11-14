@@ -1,0 +1,17 @@
+{
+  "name": "epicuria",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@base44/sdk": "latest"
+  },
+  "devDependencies": {
+    "vite": "^6.0.0",
+    "base44": "latest"
+  }
+}
