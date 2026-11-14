@@ -1,0 +1,17 @@
+{
+  "name": "Player",
+  "type": "object",
+  "title": "Profil public du joueur",
+  "properties": {
+    "uid": { "type": "string" },
+    "xp": { "type": "number", "default": 0 },
+    "data": { "type": "object" }
+  },
+  "required": ["uid"],
+  "rls": {
+    "create": true,
+    "read": true,
+    "update": { "created_by": "{{user.email}}" },
+    "delete": { "created_by": "{{user.email}}" }
+  }
+}

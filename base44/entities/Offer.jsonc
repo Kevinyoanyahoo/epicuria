@@ -1,0 +1,18 @@
+{
+  "name": "Offer",
+  "type": "object",
+  "title": "Délégation de mission entre joueurs",
+  "properties": {
+    "oid": { "type": "string" },
+    "from": { "type": "string" },
+    "to": { "type": "string" },
+    "data": { "type": "object" }
+  },
+  "required": ["oid"],
+  "rls": {
+    "create": true,
+    "read": true,
+    "update": true,
+    "delete": { "created_by": "{{user.email}}" }
+  }
+}

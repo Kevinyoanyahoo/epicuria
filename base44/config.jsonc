@@ -1,0 +1,9 @@
+{
+  // EpicurIA : serious game social sur l'IA, le leadership et les enjeux du développement africain
+  "name": "EpicurIA",
+  "description": "Monde social de bureaux et de missions : monte en compétences en jouant, seul ou avec les autres joueurs.",
+  "site": {
+    "buildCommand": "npm run build",
+    "outputDirectory": "dist"
+  }
+}
