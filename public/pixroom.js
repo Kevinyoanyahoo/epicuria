@@ -480,6 +480,7 @@
       const k = (c.getTransform && c.getTransform().a) || 1;
       g.setTransform(k / pf, 0, 0, k / pf, 0, 0);
       basePaint(g, R);
+      if (window.PIXARCH) { try { window.PIXARCH(g, R); } catch (e) {} }
       c.save();
       c.setTransform(1, 0, 0, 1, 0, 0);
       c.imageSmoothingEnabled = false;
