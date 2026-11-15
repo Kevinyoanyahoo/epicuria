@@ -8,7 +8,7 @@
     "build": "vite build"
   },
   "dependencies": {
-    "@base44/sdk": "^0.8.61",
+    "@base44/sdk": "^0.8.62",
     "@base44/vite-plugin": "^1.0.52"
   },
   "devDependencies": {
