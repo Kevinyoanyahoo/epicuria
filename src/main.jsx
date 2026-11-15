@@ -1,0 +1,1 @@
+// EpicurIA : le jeu est servi tel quel par index.html, aucun montage React n'est nécessaire ici.

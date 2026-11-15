@@ -1132,7 +1132,7 @@ function drawPortrait(cv,L,pose='idle',bg){
 }
 
 /* =================== STAGES =================== */
-const VW=960,VH=540,WORLD=2560,GY=510,DOORX=WORLD-200,CS=1.45,HY=GY-345;
+let VW=960,VH=540;const WORLD=2560,GY=510,DOORX=WORLD-200,CS=1.45,HY=GY-345;
 const THEMES={
  office:{sky:[[0,'#5fb6f0'],[.7,'#bfe6ff'],[1,'#e8f6ff']],sun:{x:.7,y:120,r:40,c:'#fff7d0'},city:['#8fb2d6','#6c8fb8'],win:'#e6f2ff',wall:['#e9e2d2','#d7ccb6'],trim:'#8a6a48',frame:'#f6f2ea',floor:['#c9a578','#8f6a43'],kind:'office',light:'day',accent:'#2a5bd7'},
  hub:{sky:[[0,'#4aa8e8'],[.7,'#a8dcff'],[1,'#dff2ff']],sun:{x:.3,y:100,r:36,c:'#fff7d0'},city:['#8db8d0','#5d8aa8'],win:'#e6f2ff',wall:['#dfe8ee','#c3d2dc'],trim:'#2f7175',frame:'#f2f7fa',floor:['#b8c7d2','#7c8f9e'],kind:'hub',light:'day',accent:'#14909e'},
@@ -1322,7 +1322,7 @@ function buildStage(arg){
 /* =================== GAME STATE =================== */
 let G=null,SIT=null,held=null,busy=false;
 const cv=$('#game'),ctx=cv.getContext('2d');
-const K=cv.width/VW;
+let K=cv.width/VW;
 const allDone=()=>G&&G.todo.every(k=>G.done[k]);
 function go(fn){const f=$('#fade');f.style.opacity=1;setTimeout(()=>{fn();window.scrollTo(0,0);f.style.opacity=0;},260);}
 function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));$(id).classList.add('on');}
@@ -2036,7 +2036,7 @@ function comiteRoom(theme){const b={crisis:{floor:{type:'tile',c1:'#2e3649',c2:'
   wall:[W('R',1,2,'window'),W('R',6,2,'window'),W('L',2,3,'art')],spawn:[1,4],id:'comite',name:'Comité',theme},b);return layoutRoom(R);}
 
 /* ---- Rendu statique de la salle ---- */
-function roomStatic(R,k){R._c=R._c||{};const key=String(k);if(R._c[key])return R._c[key];const cv2=document.createElement('canvas');cv2.width=Math.round(VW*k);cv2.height=Math.round(VH*k);const c=cv2.getContext('2d');c.scale(k,k);paintRoomStatic(c,R);R._c[key]=cv2;return cv2;}
+function roomStatic(R,k){R._c=R._c||{};const key=k+'|'+VW+'|'+VH;if(R._c[key])return R._c[key];const cv2=document.createElement('canvas');cv2.width=Math.round(VW*k);cv2.height=Math.round(VH*k);const c=cv2.getContext('2d');c.scale(k,k);paintRoomStatic(c,R);R._c[key]=cv2;return cv2;}
 function wallQuad(R,side,p0,p1,z0,z1){return side==='R'?[IP(R,p0,0,z1),IP(R,p1,0,z1),IP(R,p1,0,z0),IP(R,p0,0,z0)]:[IP(R,0,p0,z1),IP(R,0,p1,z1),IP(R,0,p1,z0),IP(R,0,p0,z0)];}
 function paintRoomStatic(c,R){
  const g=c.createLinearGradient(0,0,0,VH);g.addColorStop(0,'#141833');g.addColorStop(1,'#0b0d1c');c.fillStyle=g;c.fillRect(0,0,VW,VH);
@@ -3961,6 +3961,6 @@ if(load())$('#bContinue').style.display='block';
 fillCreate();syncToggles();
 $('#cbSend').onclick=sendChat;$('#chatIn').addEventListener('keydown',e=>{e.stopPropagation();if(e.key==='Enter')sendChat();});$('#cbWave').onclick=sendWave;$('#cbDecor').onclick=()=>panelDecor();
 window.EPICURIA_BRIDGE.then(()=>initNet()).then(()=>{hookChat();if(S.name)$('#bContinue').style.display='block';});
-</script>
+</script><script src="/immersive.js"></script><div id="root"></div><script type="module" src="/src/main.jsx"></script>
 </body>
 </html>
