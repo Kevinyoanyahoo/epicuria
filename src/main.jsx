@@ -1,1 +1,3 @@
-// EpicurIA : le jeu est servi tel quel par index.html, aucun montage React n'est nécessaire ici.
+// The existing Canvas engine stays in charge of the game; only its artwork is replaced.
+import WorldArt from '@/components/world/WorldArt';
+WorldArt();

@@ -29,7 +29,7 @@ export default async function (req) {
       }
       const { baseURL, token, headers } = base44.asServiceRole.aiGateway.connection();
       const client = new OpenAI({ baseURL, apiKey: token, defaultHeaders: headers, maxRetries: 0 });
-      const furniture = body.asset === 'furniture' || body.asset === 'specialty';
+      const furniture = ['furniture', 'specialty', 'finishing'].includes(body.asset);
       const request = {
         model: 'automatic', prompt: PIXEL_ART_CATALOG[body.asset], n: 1,
         response_format: 'url', aspect_ratio: furniture ? '1:1' : '2:3',

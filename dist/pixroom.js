@@ -4,7 +4,7 @@
 (function () {
   if (!window.FDEF || typeof paintRoomStatic !== 'function' || typeof IP !== 'function' || typeof shade !== 'function') return;
 
-  const AT = 32, AH = 16;                 // pixels d'art par case (largeur / hauteur isométrique)
+  const AT = 64, AH = 32;                 // pixels d'art par case (largeur / hauteur isométrique)
   const apxOf = (R) => (R.tw || 64) / AT; // px monde par pixel d'art
   const rt = (v) => Math.round(v);
   const cache = new Map();
