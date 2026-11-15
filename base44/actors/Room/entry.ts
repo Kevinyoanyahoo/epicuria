@@ -4,6 +4,13 @@ import { Actor } from "base44:runtime/actors";
 // et événements (chat de salle, messages privés, invitations). Une seule instance « lobby ».
 type Peer = { peer: string; by: string | null; presence: Record<string, unknown> };
 const TOPICS = ["chat", "dm", "inv"];
+// Seuls ces champs sont publics. Un message privé ou une invitation ne voyage jamais dans la présence.
+const PUBLIC_PRESENCE = ["nm", "uid", "pl", "rm", "ci", "cj", "dir", "lv", "mt", "lk", "em", "et", "ms"];
+function publicPresence(raw: Record<string, unknown>) {
+  const out: Record<string, unknown> = {};
+  for (const k of PUBLIC_PRESENCE) if (raw[k] !== undefined) out[k] = raw[k];
+  return out;
+}
 
 export default class Room extends Actor {
   peers = new Map<string, Peer>(); // clé : conn.id (jamais diffusée)
@@ -14,6 +21,7 @@ export default class Room extends Actor {
     this.peers = new Map(saved ?? []);
     const live = new Set(this.getConnections().map((c: any) => c.id));
     for (const k of [...this.peers.keys()]) if (!live.has(k)) this.peers.delete(k);
+    for (const p of this.peers.values()) p.presence = publicPresence(p.presence || {});
   }
 
   persist(force = false) {
@@ -47,8 +55,8 @@ export default class Room extends Actor {
     if (msg.type === "presence") {
       const pr = msg.p && typeof msg.p === "object" && !Array.isArray(msg.p) ? msg.p : {};
       if (JSON.stringify(pr).length > 4000) return;
-      p.presence = pr;
-      this.broadcast({ type: "pr", peer: p.peer, by: p.by, presence: pr });
+      p.presence = publicPresence(pr);
+      this.broadcast({ type: "pr", peer: p.peer, by: p.by, presence: p.presence });
       this.persist();
       return;
     }

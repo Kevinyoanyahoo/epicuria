@@ -273,7 +273,7 @@ body{font-family:'Inter','Barlow',system-ui,sans-serif}
 .logo{font-size:46px!important;letter-spacing:5px!important}.logo .ia{-webkit-text-fill-color:#7fd48a;color:#7fd48a}@media(max-width:520px){.logo{font-size:34px!important;letter-spacing:3px!important}.logoWrap svg{width:40px;height:40px}}
 </style>
 <script>window.EPICURIA_BRIDGE=new Promise(r=>window.__bridgeResolve=r);</script>
-  <script type="module" crossorigin src="/assets/index-cn5Mq-53.js"></script>
+  <script type="module" crossorigin src="/assets/index-DB0Eo3tr.js"></script>
 </head>
 <body>
 <div id="fade"></div>
@@ -3648,33 +3648,23 @@ function useFurni(f){if(busy)return;const [i,j]=adjTile({ci:f.i+f.w/2,cj:f.j+f.d
  const a=f.act;if(a==='missions')panelMissions();else if(a==='afrique')panelAfrique();else if(a==='savoirs'||a==='masterclass')panelSavoirs();else if(a==='shop')panelShop();else if(a==='rank')panelRank();else if(a==='offers')panelOffers('in');else if(a==='vip')panelVip();
  else if(a==='daily')panelDaily();else if(a==='tender')panelTenders();else if(a==='custom')panelMissions();else if(a==='cv')panelProfile();else if(a==='cafe'){const st=staffFor('cafe')[0];st&&st.staff();}SFX.talk();});}
 
-/* ---- v7.1 · Messages portés aussi par la présence (marche même sans droit d'événements) ---- */
+/* ---- v7.1 · Présence publique : bulle de chat uniquement, jamais de message privé ---- */
 NET.seen=NET.seen||new Set();
 function seenOnce(id){if(NET.seen.has(id))return false;NET.seen.add(id);if(NET.seen.size>500)NET.seen=new Set([...NET.seen].slice(-250));return true;}
 function sendChat(){const inp=$('#chatIn');const t=inp.value.trim().slice(0,120);if(!t||!G||G.mode!=='plaza')return;inp.value='';G.bubbles.push({e:G.p,name:S.name,text:t,t0:performance.now(),col:lvCol(myLv())});SFX.blip(700);
  const ts=Date.now();NET.myMsg={rm:G.rid,t,ts};NET.lastP='';if(NET.room){try{NET.room.emit('chat',{rm:G.rid,t,ts}).catch(()=>{NET.evOK=false;});}catch(e){NET.evOK=false;}}}
 function hookChat(){if(!NET.room||NET._chat)return;NET._chat=1;try{NET.room.on('chat',msg=>{if(!G||G.mode!=='plaza')return;if(msg.isMe)return;const d=msg.data||{};if(d.rm!==G.rid||typeof d.t!=='string')return;if(!seenOnce(msg.peer+':'+(d.ts||d.t)))return;const e=G.ents.find(x=>x.peer&&x.peer.peer===msg.peer);if(!e)return;G.bubbles.push({e,name:e.nm,text:d.t.slice(0,120),t0:performance.now(),col:lvCol(e.lv)});SFX.blip(500);},()=>{});}catch(e){}}
-const _dmSend0=dmSend;
-dmSend=function(k,nm,t){const ok=_dmSend0(k,nm,t);if(ok){NET.myDm={to:k,fk:NET.uid||myPeerId(),fn:String(S.name).slice(0,16),t:String(t).trim().slice(0,200),ts:NET.lastDmTs||Date.now()};NET.lastP='';}return ok;};
-const _invite0=invite;
-invite=function(k,nm){_invite0(k,nm);NET.myInv={to:k,fk:NET.uid||myPeerId(),fn:String(S.name).slice(0,16),rm:G.rid==='visit'?'hall':G.rid,ts:Date.now()};NET.lastP='';};
-function netInbox(){const me1=NET.uid,me2=myPeerId();const mine=to=>to&&(to===me1||to===me2);
- (NET.peers||[]).forEach(pp=>{if(pp.isMe||!pp.presence)return;const pr=pp.presence;
-  if(pr.dm&&typeof pr.dm.t==='string'&&mine(pr.dm.to)&&seenOnce('dm:'+String(pr.dm.fk||pp.peer).slice(0,80)+':'+pr.dm.ts)&&Date.now()-(+pr.dm.ts||0)<600000){
-   const k=String(pr.dm.fk||pp.peer).slice(0,80),nm=String(pr.dm.fn||pr.nm||'Joueur').slice(0,16);S.dms=S.dms||{};const th=S.dms[k]=S.dms[k]||{nm,l:[]};
-   if(!th.l.some(m=>!m.me&&m.t===pr.dm.t&&Math.abs((m.ts0||0)-pr.dm.ts)<2)){th.nm=nm;th.l.push({t:pr.dm.t.slice(0,200),ts:Date.now(),ts0:pr.dm.ts});th.l=th.l.slice(-40);
-    if(CUR_DM===k&&sheetOpen())panelDM(k,nm);else{th.u=(th.u||0)+1;toast2('💬 '+nm+' : '+pr.dm.t.slice(0,60));}save();SFX.blip(820);if(G&&G.mode==='plaza'&&!sheetOpen())renderPlazaBar();}}
-  if(pr.iv&&mine(pr.iv.to)&&seenOnce(pp.peer+':iv'+pr.iv.ts)&&Date.now()-(+pr.iv.ts||0)<120000){const nm=String(pr.iv.fn||pr.nm||'Joueur').slice(0,16),rm=String(pr.iv.rm||'hall');
-   if(G&&G.mode==='plaza'&&!busy&&!sheetOpen()){openSheet('Invitation',`<div class="info">📨 <b>${esc(nm)}</b> t’invite à le rejoindre : <b>${esc(RN[rm]||'Le Hall')}</b>.</div><div class="btnrow"><button class="btn ghost" id="ivNo">Plus tard</button><button class="btn" id="ivGo">Rejoindre</button></div>`);$('#ivNo').onclick=hideSheet;$('#ivGo').onclick=()=>{SFX.door();startWorld(rm==='vip'&&myLv()<10?'hall':rm,G.rid);};}else toast2('📨 '+nm+' t’invite : '+(RN[rm]||'le Hall'));}
+
+function netInbox(){(NET.peers||[]).forEach(pp=>{if(pp.isMe||!pp.presence)return;const pr=pp.presence;
   if(G&&G.mode==='plaza'&&pr.ms&&typeof pr.ms.t==='string'&&pr.ms.rm===G.rid&&seenOnce(pp.peer+':'+pr.ms.ts)&&Date.now()-(+pr.ms.ts||0)<15000){const e=G.ents.find(x=>x.peer&&x.peer.peer===pp.peer);if(e){G.bubbles.push({e,name:e.nm,text:pr.ms.t.slice(0,120),t0:performance.now(),col:lvCol(e.lv)});SFX.blip(500);}}});}
 function netSendPresence(){if(!NET.room)return;const now=performance.now();if(now-NET.lastPT<120)return;NET.lastPT=now;netInbox();
- const inW=G&&G.mode==='plaza';const extra={nm:String(S.name||'Joueur').slice(0,16),uid:NET.uid||null,dm:NET.myDm||null,iv:NET.myInv||null};
+ const inW=G&&G.mode==='plaza';const extra={nm:String(S.name||'Joueur').slice(0,16),uid:NET.uid||null};
  const pl=inW?Object.assign({pl:1,rm:G.rid==='visit'?'visit:'+((G.owner&&G.owner.id)||''):G.rid,ci:Math.round(G.p.ci*100)/100,cj:Math.round(G.p.cj*100)/100,dir:G.p.dir,lv:myLv(),mt:S.metier,lk:S.look,em:G.myEm?G.myEm.e:null,et:G.myEm?G.myEm.t:0,ms:NET.myMsg&&Date.now()-NET.myMsg.ts<15000?NET.myMsg:null},extra):Object.assign({pl:0,rm:null,lv:myLv()},extra);
  const sig=JSON.stringify(pl);if(sig===NET.lastP)return;NET.lastP=sig;try{NET.room.presence(pl).then(()=>{NET.prOK=true;},()=>{NET.prOK=false;});}catch(e){NET.prOK=false;}}
 setInterval(()=>{if(!G||G.mode!=='plaza')netSendPresence();},1500);
 function netDiag(){const all=(NET.peers||[]).filter(p=>!p.isMe&&p.kind!=='agent');const busyN=all.filter(p=>p.presence&&p.presence.pl===0).length;
  const ok=v=>v?'✅':'❌';const room=!!NET.room;
- return `<div class="mc" style="display:block;border-color:${room?'#7FD48A':'#FF7A6A'}"><div class="t">📡 État de la connexion</div><div class="s">${ok(room)} Temps réel ${room?'actif':'indisponible'} · ${ok(!!NET.uid)} Compte ${NET.uid?'reconnu':'non reconnu'}${NET.prOK===false?' · ⚠️ présence refusée':''}${NET.evOK===false?' · ⚠️ messages directs limités (relais par la présence)':''}</div><div class="s">${all.length} autre(s) personne(s) sur la page${busyN?` dont ${busyN} en mission`:''}.</div>${room?'':'<div class="s" style="color:#FF7A6A">Ouvre le jeu depuis le lien partagé, connecté à ton compte EpicurIA, pour voir les autres joueurs.</div>'}</div>`;}
+ return `<div class="mc" style="display:block;border-color:${room?'#7FD48A':'#FF7A6A'}"><div class="t">📡 État de la connexion</div><div class="s">${ok(room)} Temps réel ${room?'actif':'indisponible'} · ${ok(!!NET.uid)} Compte ${NET.uid?'reconnu':'non reconnu'}${NET.prOK===false?' · ⚠️ présence refusée':''}${NET.evOK===false?' · ⚠️ messages directs limités':''}</div><div class="s">${all.length} autre(s) personne(s) sur la page${busyN?` dont ${busyN} en mission`:''}.</div>${room?'':'<div class="s" style="color:#FF7A6A">Ouvre le jeu depuis le lien partagé, connecté à ton compte EpicurIA, pour voir les autres joueurs.</div>'}</div>`;}
 const _panelOnline0=panelOnline;
 panelOnline=function(tab){_panelOnline0(tab);const B=$('#shB');if(B){const d=document.createElement('div');d.innerHTML=netDiag();B.insertBefore(d.firstChild,B.children[1]||null);}};
 

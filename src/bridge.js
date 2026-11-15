@@ -240,7 +240,15 @@ function makeDb(uid) {
       set: (v) => upsert('Save', 'uid', m[1], { ts: +v.ts || Date.now(), data: v }),
     };
     if ((m = path.match(/^offers\/(.+)$/))) return {
-      set: (o) => upsert('Offer', 'oid', m[1], { from: o.from || '', to: o.to || '', data: o }),
+      // Création côté serveur : l'expéditeur et son nom affiché ne sont jamais choisis par le client.
+      set: async (o) => {
+        const res = await base44.functions.invoke('sendOffer', {
+          oid: m[1], to: o.to, toName: o.toName, toLv: o.toLv, fromLv: o.fromLv,
+          mission: o.mission, reward: o.reward, pct: o.pct, penalty: !!o.penalty,
+        });
+        if (res && res.error) throw new Error(res.error);
+        return res && res.data;
+      },
       update: async (patch) => { const r = await findOne('Offer', 'oid', m[1]); const data = Object.assign({}, r ? r.data : {}, patch); return upsert('Offer', 'oid', m[1], { data }); },
     };
     throw new Error('Chemin non pris en charge : ' + path);
