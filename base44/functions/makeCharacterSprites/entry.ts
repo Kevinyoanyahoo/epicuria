@@ -1,5 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.54';
 import OpenAI from 'npm:openai@6.45.0';
+import { PIXEL_ART_CATALOG } from '../../shared/pixelArtCatalog.js';
 
 const REF = 'https://media.base44.com/images/public/6af8f74f0cdae61f0ade2dc8/cf7469444_generated_f901f7f5.jpg';
 
@@ -22,6 +23,25 @@ export default async function (req) {
     if (user.role !== 'admin') return Response.json({ error: 'Forbidden' }, { status: 403 });
 
     const body = await req.json().catch(() => ({}));
+    if (body.asset !== undefined) {
+      if (typeof body.asset !== 'string' || !Object.hasOwn(PIXEL_ART_CATALOG, body.asset)) {
+        return Response.json({ error: 'Unknown pixel-art asset' }, { status: 400 });
+      }
+      const { baseURL, token, headers } = base44.asServiceRole.aiGateway.connection();
+      const client = new OpenAI({ baseURL, apiKey: token, defaultHeaders: headers, maxRetries: 0 });
+      const furniture = body.asset === 'furniture' || body.asset === 'specialty';
+      const request = {
+        model: 'automatic', prompt: PIXEL_ART_CATALOG[body.asset], n: 1,
+        response_format: 'url', aspect_ratio: furniture ? '1:1' : '2:3',
+        resolution: '1K', quality: 'high', output_format: 'png', background: 'transparent'
+      };
+      if (body.dryRun === true) {
+        const estimate = await client.images.generate({ ...request, dry_run: true });
+        return Response.json({ asset: body.asset, usage: estimate.usage });
+      }
+      const { data, usage } = await client.images.generate(request);
+      return Response.json({ asset: body.asset, url: data[0].url, usage });
+    }
     const only = Array.isArray(body.indexes)
       ? body.indexes.filter((i: number) => Number.isInteger(i) && i >= 0 && i < CHARACTERS.length)
       : Number.isInteger(body.index)
