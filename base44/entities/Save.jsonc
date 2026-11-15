@@ -1,17 +1,34 @@
 {
   "name": "Save",
   "type": "object",
-  "title": "Sauvegarde privée de la progression",
+  "title": "Sauvegarde priv\u00e9e de la progression",
   "properties": {
-    "uid": { "type": "string" },
-    "ts": { "type": "number", "default": 0 },
-    "data": { "type": "object" }
+    "uid": {
+      "type": "string"
+    },
+    "ts": {
+      "type": "number",
+      "default": 0
+    },
+    "data": {
+      "type": "object"
+    }
   },
-  "required": ["uid"],
+  "required": [
+    "uid"
+  ],
   "rls": {
-    "create": true,
-    "read": { "created_by": "{{user.email}}" },
-    "update": { "created_by": "{{user.email}}" },
-    "delete": { "created_by": "{{user.email}}" }
+    "create": {
+      "data.uid": "{{user.id}}"
+    },
+    "read": {
+      "created_by": "{{user.email}}"
+    },
+    "update": {
+      "created_by": "{{user.email}}"
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
   }
 }

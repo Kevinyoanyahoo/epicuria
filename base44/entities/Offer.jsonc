@@ -1,18 +1,69 @@
 {
   "name": "Offer",
   "type": "object",
-  "title": "Délégation de mission entre joueurs",
+  "title": "D\u00e9l\u00e9gation de mission entre joueurs",
   "properties": {
-    "oid": { "type": "string" },
-    "from": { "type": "string" },
-    "to": { "type": "string" },
-    "data": { "type": "object" }
+    "oid": {
+      "type": "string"
+    },
+    "from": {
+      "type": "string"
+    },
+    "to": {
+      "type": "string"
+    },
+    "data": {
+      "type": "object"
+    }
   },
-  "required": ["oid"],
+  "required": [
+    "oid"
+  ],
   "rls": {
-    "create": true,
-    "read": true,
-    "update": true,
-    "delete": { "created_by": "{{user.email}}" }
+    "create": {
+      "$or": [
+        {
+          "data.from": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "read": {
+      "$or": [
+        {
+          "data.from": "{{user.id}}"
+        },
+        {
+          "data.to": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.from": "{{user.id}}"
+        },
+        {
+          "data.to": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "created_by": "{{user.email}}"
+    }
   }
 }
