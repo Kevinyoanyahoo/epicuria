@@ -27,6 +27,8 @@
   .card,.lvl,.mc,.pb1,.tm,.lb,.pb2 button,.chip-o,.seg button,.tabs button,.g,
   #chatbar input,.ico,#shX,#hxTR,#hxBL,#hxBR{background-image:linear-gradient(180deg,#262b52,#1a1d38)}
 }
+/* les éléments répétés dans les feuilles gardent le dégradé mais pas le flou (perf mobile) */
+.lvl,.mc,.tm,.lb,.pb2 button,.chip-o,.seg button,.tabs button{-webkit-backdrop-filter:none;backdrop-filter:none}
 
 /* verre plus profond pour les grandes surfaces flottantes */
 #sheet .sh,#modal .box,#intro .box,#coachCard,#emoPop{
@@ -116,4 +118,40 @@
   #stage{border-radius:14px}
   #sheet .sh{border-radius:18px 18px 0 0}
   .g{border-radius:10px}
+}
+
+/* ===== Présentation du personnage : carte crème, illustration agrandie, halo doux ===== */
+.characterCard{
+  box-sizing:border-box;position:relative;isolation:isolate;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:14px;width:100%;max-width:420px;margin:0 auto;
+  padding:22px;background:#fbf4e6;border:1px solid #e4d6bd;border-radius:28px;
+  box-shadow:0 16px 38px rgba(78,56,29,.13),0 3px 8px rgba(78,56,29,.08);overflow:hidden;
+}
+.characterCard:before{
+  content:"";position:absolute;z-index:-1;width:300px;height:300px;border-radius:50%;
+  background:radial-gradient(circle,rgba(174,190,130,.36) 0%,rgba(207,213,165,.18) 43%,rgba(251,244,230,0) 72%);
+  animation:ccHalo 5s ease-in-out infinite alternate;
+}
+@keyframes ccHalo{from{transform:scale(.94);opacity:.72}to{transform:scale(1.06);opacity:1}}
+.characterCard .ccShot{
+  display:flex;align-items:center;justify-content:center;width:100%;aspect-ratio:4/3;
+  border-radius:18px;overflow:hidden;
+  background:radial-gradient(circle at 50% 38%,#fffdf5 0%,#f4e9d4 62%,#ebdec2 100%);
+  box-shadow:0 9px 18px rgba(73,54,31,.17),0 2px 5px rgba(73,54,31,.1);
+}
+.characterCard .bust{
+  width:min(74%,232px);height:auto;aspect-ratio:1/1;border:0;border-radius:16px;
+  filter:drop-shadow(0 9px 8px rgba(73,54,31,.17));box-shadow:0 9px 8px rgba(73,54,31,.17);
+}
+.characterCard .prof{display:block;text-align:center;color:#4e381d}
+.characterCard .prof b{
+  display:block;font-family:'Outfit',sans-serif;font-weight:800;font-size:23px;line-height:1.15;
+  color:#3b2a12;letter-spacing:.2px;margin-bottom:5px;
+}
+.characterCard .prof .l{font-size:13.5px;line-height:1.6;color:#6b5636}
+.characterCard .prof .l b+br{display:none}
+.characterCard .atout{background:#e9ddbf;color:#5b4626;border-color:#cbb78b}
+@media (max-width:600px){
+  .characterCard{padding:18px;border-radius:24px}
+  .characterCard .prof b{font-size:20px}
 }

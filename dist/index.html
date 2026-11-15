@@ -1728,7 +1728,7 @@ function panelVip(){
 }
 function panelProfile(){
  const lv=myLv(),cc=S.ccomp;const nd=Object.keys(S.done).length;
- let h=`<div class="prof"><canvas id="prC" class="bust" width="240" height="240"></canvas><div class="l"><b></b><br>${METIERS[S.metier].e} ${esc(metierLabel())}<br>${SECT[S.secteur].e} ${SECT[S.secteur].label} · ${XP[S.xp].label}<br><span class="atout">Niv. ${lv} · ${rankOf(lv)}</span></div></div>
+ let h=`<div class="characterCard"><div class="ccShot"><canvas id="prC" class="bust" width="240" height="240"></canvas></div><div class="prof"><div class="l"><b></b><br>${METIERS[S.metier].e} ${esc(metierLabel())}<br>${SECT[S.secteur].e} ${SECT[S.secteur].label} · ${XP[S.xp].label}<br><span class="atout">Niv. ${lv} · ${rankOf(lv)}</span></div></div></div>
  <div class="card"><h3>Statistiques</h3><div class="mut">XP : ${fmt(S.pts)} · Prochain niveau : ${lv>=50?'max':fmt(XPN(lv+1))} XP<br>Crédits : 🪙 ${fmt(S.cr)} · Missions réussies : ${nd}/${MISSIONS.length} · Conseils bonus : ${S.hb||0}<br>Équipe : ${S.team.map(tName).join(', ')}</div></div>
  <div class="card"><h3>Profil de compétences</h3>${Object.keys(CN).map(k=>`<div class="cbar"><span>${CN[k]}</span><div class="bar"><i style="width:${Math.min(100,(cc[k]||0)/30*100)}%"></i></div><span style="width:26px;text-align:right">${cc[k]||0}</span></div>`).join('')}</div>
  <div class="sec">Univers du jeu</div><div class="seg" id="prMode"><button data-v="open" class="${S.mode==='open'?'on':''}">🌐 Ouvert</button><button data-v="afr" class="${S.mode==='afr'?'on':''}">🌍 Afrique</button></div>
@@ -3236,7 +3236,7 @@ function paCard(){const a=S.pa;if(!a)return'';
  ${a.savoirs.length?`<div class="mut" style="margin-top:6px"><b>Fiches conseillées</b><br>${a.savoirs.map(id=>'• '+esc(SAVOIRS.find(f=>f.id===id).t)).join('<br>')}</div>`:''}</div>`;}
 function panelProfile(){
  const lv=myLv(),cc=S.ccomp;const nd=Object.keys(S.done).filter(k=>k!=='cx').length,nm=MISSIONS.filter(m=>!m.hidden).length;
- let h=`<div class="prof"><canvas id="prC" class="bust" width="240" height="240"></canvas><div class="l"><b></b><br>${METIERS[S.metier].e} ${esc(metierLabel())}<br>${SECT[S.secteur].e} ${SECT[S.secteur].label} · ${XP[S.xp].label}<br><span class="atout">Niv. ${lv} · ${rankOf(lv)}</span></div></div>
+ let h=`<div class="characterCard"><div class="ccShot"><canvas id="prC" class="bust" width="240" height="240"></canvas></div><div class="prof"><div class="l"><b></b><br>${METIERS[S.metier].e} ${esc(metierLabel())}<br>${SECT[S.secteur].e} ${SECT[S.secteur].label} · ${XP[S.xp].label}<br><span class="atout">Niv. ${lv} · ${rankOf(lv)}</span></div></div></div>
  <div class="card"><h3>Mon parcours professionnel</h3><div class="mut">${S.hl?esc(S.hl)+'<br>':''}${S.cv?`CV renseigné (${S.cv.length} caractères)`:'Aucun CV renseigné : les conseils restent génériques.'}${S.li?`<br>LinkedIn ${S.liPub?'visible des autres joueurs':'privé'}`:''}</div>
   <div class="btnrow"><button class="btn ghost" id="prCV">${S.cv||S.hl?'Modifier':'Renseigner mon CV / LinkedIn'}</button><button class="btn" id="prAn" ${NET.sample?'':'disabled'}>${S.pa?'Relancer l’analyse':'Analyser mon profil'}</button></div></div>
  ${paCard()}
