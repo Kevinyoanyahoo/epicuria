@@ -193,6 +193,22 @@ function gate() {
 }
 
 /* ---------- Données (profils publics, sauvegarde, offres) ---------- */
+// Une offre vient d'un autre joueur : on ne renvoie au jeu que des champs typés et bornés.
+const OFFER_STATUSES = ['pending', 'accepted', 'countered', 'refused', 'done', 'failed', 'paid'];
+const plain = (v, n) => String(v == null ? '' : v).replace(/[<>&]/g, '').slice(0, n);
+const bound = (v, lo, hi, d) => { const n = Math.round(+v); return Number.isFinite(n) ? Math.min(hi, Math.max(lo, n)) : d; };
+const docId = (v) => String(v == null ? '' : v).replace(/[^\w-]/g, '').slice(0, 64);
+function safeOffer(raw) {
+  return Object.assign({}, raw, {
+    from: plain(raw.from, 64), to: plain(raw.to, 64), mission: plain(raw.mission, 32),
+    fromName: plain(raw.fromName, 40) || 'Joueur', toName: plain(raw.toName, 40) || 'Joueur',
+    fromLv: bound(raw.fromLv, 0, 99, 1), toLv: bound(raw.toLv, 0, 99, 1),
+    reward: bound(raw.reward, 0, 10000000, 0), pct: bound(raw.pct, 0, 100, 0),
+    counter: raw.counter == null ? null : bound(raw.counter, 0, 100, 0), gf: bound(raw.gf, 0, 1, 0),
+    ts: bound(raw.ts, 0, Date.now() + 864e5, 0),
+    status: OFFER_STATUSES.includes(raw.status) ? raw.status : 'pending', penalty: !!raw.penalty, bot: raw.bot === true,
+  });
+}
 function makeDb(uid) {
   const E = base44.entities;
   const ids = {}; // cache des identifiants d'enregistrement
@@ -212,7 +228,7 @@ function makeDb(uid) {
     ids[k] = r.id;
     return r;
   }
-  const snap = (rows, idf) => ({ docs: (rows || []).map((r) => ({ id: r[idf], data: () => Object.assign({}, r.data || {}) })) });
+  const snap = (rows, idf, clean) => ({ docs: (rows || []).map((r) => ({ id: clean ? docId(r[idf]) : r[idf], data: () => (clean ? clean(Object.assign({}, r.data || {})) : Object.assign({}, r.data || {})) })) });
 
   function doc(path) {
     let m;
@@ -246,7 +262,7 @@ function makeDb(uid) {
           try {
             const rows = q.where ? await E[ent].filter({ [q.where[0]]: q.where[1] }, q.order || '-updated_date', q.lim)
                                  : await E[ent].list(q.order || '-updated_date', q.lim);
-            if (alive) cb(snap(rows, idf));
+            if (alive) cb(snap(rows, idf, ent === 'Offer' ? safeOffer : null));
           } catch (e) { onErr && onErr(e); }
         };
         const soon = () => { clearTimeout(t); t = setTimeout(run, 800); };

@@ -273,7 +273,7 @@ body{font-family:'Inter','Barlow',system-ui,sans-serif}
 .logo{font-size:46px!important;letter-spacing:5px!important}.logo .ia{-webkit-text-fill-color:#7fd48a;color:#7fd48a}@media(max-width:520px){.logo{font-size:34px!important;letter-spacing:3px!important}.logoWrap svg{width:40px;height:40px}}
 </style>
 <script>window.EPICURIA_BRIDGE=new Promise(r=>window.__bridgeResolve=r);</script>
-  <script type="module" crossorigin src="/assets/index-CYhDBztw.js"></script>
+  <script type="module" crossorigin src="/assets/index-cn5Mq-53.js"></script>
 </head>
 <body>
 <div id="fade"></div>
@@ -1678,7 +1678,7 @@ function openKiosk(id){SFX.talk();({board:panelMissions,shop:panelShop,rank:pane
 function panelMissions(){
  const lv=myLv();let h=`<div class="info">Niveau ${lv} · ${rankOf(lv)}. Les missions élites sont réservées aux hauts niveaux… sauf si un joueur expérimenté te délègue la sienne.</div>`;
  const deleg=allOffers().filter(o=>isMine(o,'to')&&o.status==='accepted');
- if(deleg.length){h+='<div class="sec">Missions déléguées</div>'+deleg.map(o=>{const m=MI(o.mission);if(!m)return'';const inf=mInfo(m);return `<div class="mc"><div style="flex:1"><span class="k k-deleg">Pour ${esc(o.fromName)}</span> <span class="k k-${m.kind}">${KLAB[m.kind]}</span><div class="t">${esc(inf.t)}</div><div class="s">Ta part : ${o.pct} % de ${fmt(o.reward)} crédits</div><div class="rw">⭐ <b>${fmt(m.xp*0.8)}</b> XP · 🪙 <b>${fmt(o.reward*o.pct/100)}</b></div></div><button class="go alt" data-off="${esc(o.id)}">Jouer</button></div>`;}).join('');}
+ if(deleg.length){h+='<div class="sec">Missions déléguées</div>'+deleg.map(o=>{const m=MI(o.mission);if(!m)return'';const inf=mInfo(m);return `<div class="mc"><div style="flex:1"><span class="k k-deleg">Pour ${esc(o.fromName)}</span> <span class="k k-${m.kind}">${KLAB[m.kind]}</span><div class="t">${esc(inf.t)}</div><div class="s">Ta part : ${esc(o.pct)} % de ${esc(fmt(o.reward))} crédits</div><div class="rw">⭐ <b>${fmt(m.xp*0.8)}</b> XP · 🪙 <b>${esc(fmt(o.reward*o.pct/100))}</b></div></div><button class="go alt" data-off="${esc(o.id)}">Jouer</button></div>`;}).join('');}
  [['story','Foundation · la campagne'],['command','Desk · diriger une équipe'],['elite','Blueprints · comités jugés par l’IA']].forEach(([k,lab])=>{
   h+=`<div class="sec">${lab}</div>`;
   MISSIONS.filter(m=>m.kind===k).forEach(m=>{const inf=mInfo(m),ok=mAccess(m),d=S.done[m.id];const why=lv<m.req?`🔒 Niveau ${m.req} requis`:(m.after&&!S.done[m.after]?'🔒 Termine d’abord la mission précédente':'');
@@ -1772,16 +1772,16 @@ function panelOffers(tab){
  if(tab==='in'){
   if(!inc.length)h+='<div class="info">Aucune proposition pour l’instant. Les joueurs de niveau supérieur peuvent te confier leurs missions.</div>';
   inc.forEach(o=>{const share=Math.round(o.reward*o.pct/100);let btn='';
-   const prot=myLv()<3;const body=`De <b>${esc(o.fromName)}</b> (niv. ${o.fromLv}) · Récompense ${fmt(o.reward)} crédits · Ta part : <b>${o.pct} %</b> (${fmt(share)} crédits)${o.penalty?(prot?' · ⚠️ répercussion annulée (protection débutant)':` · ⚠️ Refus = −${fmt(penaltyOf(o))} crédits`):''}`;
+   const prot=myLv()<3;const body=`De <b>${esc(o.fromName)}</b> (niv. ${esc(o.fromLv)}) · Récompense ${esc(fmt(o.reward))} crédits · Ta part : <b>${esc(o.pct)} %</b> (${esc(fmt(share))} crédits)${o.penalty?(prot?' · ⚠️ répercussion annulée (protection débutant)':` · ⚠️ Refus = −${fmt(penaltyOf(o))} crédits`):''}`;
    if(o.status==='pending')btn=`<div class="btnrow"><button class="go alt" data-acc="${esc(o.id)}">Accepter</button><button class="go" data-cnt="${esc(o.id)}">Négocier</button><button class="go red" data-ref="${esc(o.id)}">Refuser</button></div><div id="cn_${esc(o.id)}"></div>`;
-   else if(o.status==='countered')btn=`<div class="info">Contre-proposition envoyée (${o.counter} %). En attente de réponse.</div>`;
+   else if(o.status==='countered')btn=`<div class="info">Contre-proposition envoyée (${esc(o.counter)} %). En attente de réponse.</div>`;
    else btn=`<div class="btnrow"><button class="go alt" data-play="${esc(o.id)}">Jouer la mission</button></div>`;
    h+=card(o,body).replace('$BTN',btn);});
  }else{
   if(!out.length)h+='<div class="info">Tu n’as envoyé aucune proposition. À partir du niveau 5, approche un joueur de niveau inférieur à l’Office pour lui confier une mission.</div>';
   const SL={pending:'En attente de réponse',accepted:'Acceptée, mission en cours',refused:'Refusée',done:'Terminée, paiement en cours',failed:'Échouée',countered:'Contre-proposition reçue'};
-  out.forEach(o=>{const body=`À <b>${esc(o.toName)}</b> (niv. ${o.toLv}) · Part proposée : ${o.pct} % · <b>${SL[o.status]||o.status}</b>`;let btn='';
-   if(o.status==='countered')btn=`<div class="info">${esc(o.toName)} demande ${o.counter} %.</div><div class="btnrow"><button class="go alt" data-cacc="${esc(o.id)}">Accepter ${o.counter} %</button><button class="go red" data-cref="${esc(o.id)}">Maintenir ${o.pct} %</button></div>`;
+  out.forEach(o=>{const body=`À <b>${esc(o.toName)}</b> (niv. ${esc(o.toLv)}) · Part proposée : ${esc(o.pct)} % · <b>${esc(SL[o.status]||o.status)}</b>`;let btn='';
+   if(o.status==='countered')btn=`<div class="info">${esc(o.toName)} demande ${esc(o.counter)} %.</div><div class="btnrow"><button class="go alt" data-cacc="${esc(o.id)}">Accepter ${esc(o.counter)} %</button><button class="go red" data-cref="${esc(o.id)}">Maintenir ${esc(o.pct)} %</button></div>`;
    h+=card(o,body).replace('$BTN',btn);});
  }
  openSheet('Offres de missions',h);
@@ -1790,7 +1790,7 @@ function panelOffers(tab){
  document.querySelectorAll('#shB [data-acc]').forEach(b=>b.onclick=async()=>{const o=F(b.dataset.acc);await updOffer(o,{status:'accepted'});SFX.good();toast2('Mission acceptée : retrouve-la dans Missions');panelOffers('in');renderPlazaBar();});
  document.querySelectorAll('#shB [data-play]').forEach(b=>b.onclick=()=>{const o=F(b.dataset.play);initAudio();startMission(o.mission,o);});
  document.querySelectorAll('#shB [data-cnt]').forEach(b=>b.onclick=()=>{const o=F(b.dataset.cnt);const box=document.getElementById('cn_'+o.id);
-  box.innerHTML=`<div class="row"><label>Ta demande : <b id="cv_${esc(o.id)}">${Math.min(90,o.pct+10)}</b> %</label><input type="range" class="slider" id="cr_${esc(o.id)}" min="${o.pct}" max="90" value="${Math.min(90,o.pct+10)}"></div><button class="go" id="cs_${esc(o.id)}">Envoyer la contre-proposition</button>`;
+  const lo=clamp(+o.pct||0,0,90),hi=Math.min(90,lo+10);box.innerHTML=`<div class="row"><label>Ta demande : <b id="cv_${esc(o.id)}">${hi}</b> %</label><input type="range" class="slider" id="cr_${esc(o.id)}" min="${lo}" max="90" value="${hi}"></div><button class="go" id="cs_${esc(o.id)}">Envoyer la contre-proposition</button>`;
   const r=document.getElementById('cr_'+o.id);r.oninput=()=>document.getElementById('cv_'+o.id).textContent=r.value;
   document.getElementById('cs_'+o.id).onclick=async()=>{const v=+r.value;await updOffer(o,{status:'countered',counter:v});toast2('Contre-proposition envoyée');
    if(o.bot)setTimeout(()=>{if(o.status!=='countered')return;if(v<=o.pct+15){o.pct=v;o.status='accepted';toast2(`${o.fromName} accepte ${v} % !`);}else{o.status='pending';o.counter=null;toast2(`${o.fromName} maintient ${o.pct} %`);}save();renderPlazaBar();},3000);
@@ -3256,7 +3256,7 @@ function panelMissions(){
  h+=`<div class="mc" style="border-color:#7fd48a"><div style="flex:1"><span class="k" style="background:#1f6a4a;color:#dff">Sur mesure</span><div class="t">Mission taillée pour ton profil</div><div class="s">${S.cv||S.hl?'Claude crée un dilemme tiré de ton métier et de ton parcours, au niveau '+lv+'.':'Renseigne ton CV ou ton LinkedIn dans ton profil pour l’activer.'}</div><div class="rw">⭐ <b>${fmt(150+lv*45)}</b> XP · 🪙 <b>${fmt(120+lv*40)}</b></div></div><button class="go alt" id="mCx" ${NET.sample?'':'disabled'}>${S.cv||S.hl?'Créer':'Profil'}</button></div>`;
  h+=`<div class="mc" style="border-color:#ff9a3a"><div style="flex:1"><span class="k" style="background:#7a3a10;color:#ffe">Appels d’offres</span><div class="t">Affronte un rival pour un contrat</div><div class="s">Proposition, contre-proposition, question piège : le jury choisit. Cote : ${S.ao||1000}</div></div><button class="go alt" id="mTd">Voir</button></div>`;h+=`<div class="mc" style="border-color:#5BE3C9"><div style="flex:1"><span class="k" style="background:#12514a;color:#dff">Afrique</span><div class="t">Les grands enjeux du continent</div><div class="s">Énergie, alimentation, IA, santé, intégration, industrie : 6 missions sur la carte, qui font progresser ton pays.</div></div><button class="go alt" id="mAf">Carte</button></div>`;
  const deleg=allOffers().filter(o=>isMine(o,'to')&&o.status==='accepted');
- if(deleg.length){h+='<div class="sec">Missions déléguées</div>'+deleg.map(o=>{const m=MI(o.mission);if(!m)return'';const inf=mInfo(m);return `<div class="mc"><div style="flex:1"><span class="k k-deleg">Pour ${esc(o.fromName)}</span> <span class="k k-${m.kind}">${KLAB[m.kind]}</span><div class="t">${esc(inf.t)}</div><div class="s">Ta part : ${o.pct} % de ${fmt(o.reward)} crédits</div><div class="rw">⭐ <b>${fmt(m.xp*0.8)}</b> XP · 🪙 <b>${fmt(o.reward*o.pct/100)}</b></div></div><button class="go alt" data-off="${esc(o.id)}">Jouer</button></div>`;}).join('');}
+ if(deleg.length){h+='<div class="sec">Missions déléguées</div>'+deleg.map(o=>{const m=MI(o.mission);if(!m)return'';const inf=mInfo(m);return `<div class="mc"><div style="flex:1"><span class="k k-deleg">Pour ${esc(o.fromName)}</span> <span class="k k-${m.kind}">${KLAB[m.kind]}</span><div class="t">${esc(inf.t)}</div><div class="s">Ta part : ${esc(o.pct)} % de ${esc(fmt(o.reward))} crédits</div><div class="rw">⭐ <b>${fmt(m.xp*0.8)}</b> XP · 🪙 <b>${esc(fmt(o.reward*o.pct/100))}</b></div></div><button class="go alt" data-off="${esc(o.id)}">Jouer</button></div>`;}).join('');}
  [['story','Foundation · dossiers stratégiques'],['command','Desk · direction d’équipe'],['elite','Blueprints · missions élites']].forEach(([k,lab])=>{
   const list=MISSIONS.filter(m=>m.kind===k&&!m.hidden);const dn=list.filter(m=>S.done[m.id]).length;
   h+=`<div class="sec">${lab} · ${dn}/${list.length}</div>`;
