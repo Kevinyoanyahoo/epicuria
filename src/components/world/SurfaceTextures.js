@@ -1,4 +1,6 @@
 import { canvas, rgb } from '@/components/world/PixelAssets';
+import GameEngine from '@/components/world/GameEngine';
+const IP = GameEngine.project;
 const cache = new Map();
 const mix = (col, value) => { const v = rgb(col).map(n => Math.max(0, Math.min(255, n + value))); return `rgb(${v.join(',')})`; };
 const hash = (x, y, seed) => { const n = Math.imul(x + seed * 19, 374761393) ^ Math.imul(y + seed * 7, 668265263); return ((n ^ (n >>> 13)) >>> 0) % 100; };
@@ -72,17 +74,18 @@ function rug(c, R, f) {
   c.save(); c.imageSmoothingEnabled = false; c.drawImage(cv, a[0] - d * 32 * scale, a[1], W * scale, (H + 1) * scale); c.restore();
 }
 export default function SurfaceTextures() {
+  const FDEF = GameEngine.furniture;
   // Replace the old geometric detail pass, not the room shell or its fixture layout.
   window.PIXARCH = null;
   if (FDEF.rug) FDEF.rug.draw = rug;
   if (FDEF.goldrug) FDEF.goldrug.draw = (c, R, f) => rug(c, R, { ...f, c: f.c || '#a98343' });
-  const originalPaint = paintRoomStatic, originalWall = wallItem;
+  const originalPaint = GameEngine.paintRoomStatic, originalWall = GameEngine.wallItem;
   let active = null;
-  wallItem = (c, R, w) => {
+  GameEngine.wallItem = (c, R, w) => {
     if (active && active.room === R && !active.painted) { paintWalls(c, R); active.painted = true; }
     originalWall(c, R, w);
   };
-  paintRoomStatic = (c, R) => {
+  GameEngine.paintRoomStatic = (c, R) => {
     active = { room: R, painted: false }; originalPaint(c, R); active = null;
     for (let i = 0; i < R.w; i++) for (let j = 0; j < R.h; j++) paintFloor(c, R, i, j);
     c.save(); c.fillStyle = 'rgba(24,16,32,.16)';

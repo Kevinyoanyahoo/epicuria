@@ -1,5 +1,7 @@
+import GameEngine from '@/components/world/GameEngine';
 const px = (g, x, y, w, h, color) => { g.fillStyle = color; g.fillRect(x, y, w, h); };
 export default function AvatarDetails(g, L, dir, mood, frame, kind) {
+  const { HAIRS, OUTFITS } = GameEngine.catalog;
   if (dir === 2) return;
   const front = dir === 0, left = dir === 3, eye = left ? 25 : 39, mouth = left ? 24 : 38;
   if (mood === 'talk') { px(g, mouth, 33, 3, 2, '#592b31'); px(g, mouth, 33, 2, 1, '#e3c3ac'); }

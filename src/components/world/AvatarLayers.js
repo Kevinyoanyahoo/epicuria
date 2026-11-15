@@ -1,10 +1,12 @@
 import { cell, canvas, recolor } from '@/components/world/PixelAssets';
+import GameEngine from '@/components/world/GameEngine';
 const skinPixel = (r, g, b) => r > g * 1.15 && g > b * 1.15;
 const trousers = ['#293447', '#746049', '#d4c9ac', '#171e27'];
 const shoes = ['#24212a', '#855030', '#dbd4c3', '#682c3c'];
 const HAIR_ROWS = [['hair', 0], ['hair', 1], ['hair', 2], ['hair', 3], ['hair', 4], ['hair', 5], ['hairExtra', 0], ['hairExtra', 1], ['hairExtra', 2], ['hairExtra', 3], ['hairExtra', 4]];
 const garment = { suit: ['rig', 3], blazer: ['rig', 3], shirt: ['rig', 2], turtleneck: ['rig', 2], dress: ['wardrobe', 1], evening: ['wardrobe', 1], blouse: ['wardrobe', 3], boubou: ['wardrobe', 0], polo: ['rig', 2], trench: ['wardrobe', 2], vest: ['rig', 3], smoking: ['rig', 3] };
 export default function AvatarLayers(assets) {
+  const { SKINS, HAIRS, OUTFITS, GARMS } = GameEngine.catalog;
   const cache = new Map();
   const tintTop = (cv, L, color, kind) => {
     let result = recolor(cv, color, (r, g, b, x, y) => !(y > 70 && (x < 24 || x > 42) && skinPixel(r, g, b)) && !(r > 140 && g > 120 && b < g * .65), kind === 'blazer' || kind === 'suit' || kind === 'smoking' || kind === 'vest' ? [56, 72, 104] : kind === 'dress' || kind === 'evening' ? [136, 48, 24] : kind === 'boubou' ? [16, 80, 48] : [208, 192, 160]);
@@ -51,7 +53,9 @@ export default function AvatarLayers(assets) {
     if (dir === 1) hg.clearRect(35, 24, 18, 21);
     if (dir === 3) hg.clearRect(11, 24, 18, 21);
     const dress = chosenShirt === 'dress' || chosenShirt === 'evening' || L.bottom === 'skirt';
-    const result = { base, face, top, outer, hair, kind, dress, skin, color };
+    const skirt = dress && !['dress', 'evening'].includes(chosenShirt) ? tintTop(cell(assets, 'wardrobe', 1, dir), L, color, 'dress') : null;
+    const under = kind === 'vest' && !Number.isInteger(L.jacket) ? tintTop(cell(assets, 'rig', 2, dir), L, OUTFITS[L.shirtColor] || '#e9dfca', 'shirt') : null;
+    const result = { base, face, top, outer, hair, skirt, under, kind: chosenShirt, dress, skin, color };
     if (cache.size >= 256) cache.clear(); cache.set(key, result); return result;
   };
 }

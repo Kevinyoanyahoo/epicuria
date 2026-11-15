@@ -1,5 +1,7 @@
 import { canvas, recolor } from '@/components/world/PixelAssets';
+import GameEngine from '@/components/world/GameEngine';
 export default function FurnitureRenderer(assets) {
+  const FDEF = GameEngine.furniture, IP = GameEngine.project;
   const cache = new Map();
   Object.entries(assets.manifest.furniture).forEach(([type, def]) => {
     if (!FDEF[type]) return;

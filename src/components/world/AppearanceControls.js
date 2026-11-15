@@ -1,3 +1,4 @@
+import GameEngine from '@/components/world/GameEngine';
 const choices = [
   ['face', 'Visage', ['Naturel', 'Alternative', 'Affirmé', 'Taches de rousseur']],
   ['shirt', 'Haut indépendant', ['Chemise', 'Col roulé', 'Polo', 'Blouse', 'Wax chic']],
@@ -8,8 +9,9 @@ const choices = [
   ['jewel', 'Bijou indépendant', ['Aucun', 'Boucles', 'Collier', 'Montre']]
 ];
 export default function AppearanceControls() {
-  const originalLook = sanLook;
-  sanLook = l => {
+  const { OUTFITS } = GameEngine.catalog;
+  const originalLook = GameEngine.sanitizeLook;
+  GameEngine.sanitizeLook = l => {
     const result = originalLook(l), limits = { face: 4, shirt: 5, jacket: 5, trousers: 4, shoes: 4, glasses: 2, jewel: 4, shirtColor: OUTFITS.length, jacketColor: OUTFITS.length };
     Object.entries(limits).forEach(([key, limit]) => { if (Number.isInteger(l?.[key]) && l[key] >= 0 && l[key] < limit) result[key] = l[key]; }); return result;
   };
@@ -23,8 +25,8 @@ export default function AppearanceControls() {
       const buttons = document.createElement('div'); buttons.className = 'seg';
       labels.forEach((text, value) => {
         const button = document.createElement('button'); button.type = 'button'; button.textContent = text;
-        button.classList.toggle('on', S.look[key] === value);
-        button.onclick = () => { S.look[key] = value; [...buttons.children].forEach(b => b.classList.toggle('on', b === button)); refreshPrev(); };
+        button.classList.toggle('on', GameEngine.player.look[key] === value);
+        button.onclick = () => { GameEngine.player.look[key] = value; [...buttons.children].forEach(b => b.classList.toggle('on', b === button)); GameEngine.refreshPreview(); };
         buttons.append(button);
       });
       row.append(title, buttons); holder.append(row);
@@ -33,17 +35,17 @@ export default function AppearanceControls() {
       const row = document.createElement('div'); row.className = 'row';
       const title = document.createElement('label'); title.textContent = label;
       const buttons = document.createElement('div'); buttons.className = 'sw';
-      OUTFITS.forEach((color, value) => { if (value === 8 && !S.own.gold) return;
+      OUTFITS.forEach((color, value) => { if (value === 8 && !GameEngine.player.own.gold) return;
         const button = document.createElement('button'); button.type = 'button'; button.style.background = color;
-        button.title = `${label} ${value + 1}`; button.classList.toggle('on', S.look[key] === value);
-        button.onclick = () => { S.look[key] = value; [...buttons.children].forEach(b => b.classList.toggle('on', b === button)); refreshPrev(); }; buttons.append(button);
+        button.title = `${label} ${value + 1}`; button.classList.toggle('on', GameEngine.player.look[key] === value);
+        button.onclick = () => { GameEngine.player.look[key] = value; [...buttons.children].forEach(b => b.classList.toggle('on', b === button)); GameEngine.refreshPreview(); }; buttons.append(button);
       }); row.append(title, buttons); holder.append(row);
     });
   };
-  const original = fillCreate; fillCreate = (...args) => {
+  const original = GameEngine.fillCreate; GameEngine.fillCreate = (...args) => {
     original(...args); bind();
     document.querySelectorAll('#segG button, #segGarm button').forEach(button => {
-      const handler = button.onclick; button.onclick = event => { delete S.look.shirt; delete S.look.jacket; handler(event); bind(); };
+      const handler = button.onclick; button.onclick = event => { delete GameEngine.player.look.shirt; delete GameEngine.player.look.jacket; handler(event); bind(); };
     });
-  }; fillCreate();
+  }; GameEngine.fillCreate();
 }

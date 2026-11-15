@@ -31,10 +31,14 @@ export default function AvatarAnimation(getLayers) {
     const drawClothing = image => {
       section(g, image, 22, 36, 22, 69);
       section(g, image, 0, 36, 22, 64, swing ? -1 : 0, Math.round(swing / 2));
-      section(g, image, 44, 36, 20, 64, swing ? 1 : 0, -Math.round(swing / 2));
+      if (stance === 'greet') {
+        g.save(); g.translate(44, 44); g.rotate(-Math.PI * .65);
+        g.drawImage(image, 44, 44, 20, 42, 0, 0, 20, 42); g.restore();
+      } else section(g, image, 44, 36, 20, 64, swing ? 1 : 0, -Math.round(swing / 2));
     };
+    if (parts.under) drawClothing(parts.under);
     drawClothing(parts.top); if (parts.outer) drawClothing(parts.outer);
-    if (L.bottom === 'skirt' && !['dress', 'evening'].includes(parts.kind)) section(g, parts.top, 21, 56, 23, 18, 0, 13);
+    if (parts.skirt) section(g, parts.skirt, 16, 66, 38, 32);
     section(g, parts.face, 0, 0, 64, 44);
     section(g, parts.hair, 0, 0, 64, 70);
     AvatarDetails(g, L, dir, mood, frame, parts.kind);

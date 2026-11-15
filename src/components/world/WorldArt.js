@@ -1,4 +1,5 @@
 import { loadPixelAssets } from '@/components/world/PixelAssets';
+import GameEngine from '@/components/world/GameEngine';
 import AvatarRenderer from '@/components/world/AvatarRenderer';
 import FurnitureRenderer from '@/components/world/FurnitureRenderer';
 import SurfaceTextures from '@/components/world/SurfaceTextures';
@@ -9,15 +10,11 @@ export default async function WorldArt() {
   try {
     const assets = await loadPixelAssets();
     AvatarRenderer(assets); FurnitureRenderer(assets);
+    document.querySelectorAll('canvas').forEach(cv => { cv.style.imageRendering = 'pixelated'; });
     window.EPICURIA_ART = { ...SurfaceTextures(), standard: assets.manifest.standard, sources: assets.manifest.atlases };
     AppearanceControls();
-    if (typeof TSC !== 'undefined' && TSC?.R) TSC.R._c = {};
-    if (typeof G !== 'undefined' && G?.R) G.R._c = {};
-    if (typeof STAGES !== 'undefined') Object.keys(STAGES).forEach(key => { delete STAGES[key]; });
-    if (typeof TITLE_ST !== 'undefined') TITLE_ST = null;
-    if (typeof TSC !== 'undefined') TSC = null;
-    if (typeof TST !== 'undefined') TST = null;
-    document.querySelectorAll('#pbC, #prC, #hxTR canvas').forEach(cv => { if (typeof S !== 'undefined') drawPortrait(cv, S.look, 'smile'); });
+    GameEngine.clearArtCaches();
+    document.querySelectorAll('#pbC, #prC, #hxTR canvas').forEach(cv => GameEngine.drawPortrait(cv, GameEngine.player.look, 'smile'));
     status.remove();
   } catch (error) {
     status.textContent = 'Les sprites n’ont pas pu être chargés. Recharge la page.';
